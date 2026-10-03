@@ -112,6 +112,3 @@ Adjust this to match your actual folder layout as the project grows.
 
 Built by **Kelvin Kipchumba**.
 
-## License
-
-Add a license before publishing, for example MIT. See [choosealicense.com](https://choosealicense.com/).
