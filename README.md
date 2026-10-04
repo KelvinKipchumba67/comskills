@@ -12,14 +12,6 @@ Comskill turns proven speaking techniques into one AI-operated feedback network 
 
 Comskill helps people practise speaking and get feedback on how they deliver, not just what they say. The interface centres on a live analysis view showing pitch, cadence, pacing and a confidence score.
 
-The landing page currently includes:
-
-- A responsive navigation bar with sign-up and language controls
-- A full-width COMSKILL wordmark hero
-- A live "Pitch & Cadence" analysis card with an animated waveform
-- A "Pacing" feedback accent card
-- A sign-up route at `/auth`
-
 ## Tech stack
 
 | Area | Choice |
