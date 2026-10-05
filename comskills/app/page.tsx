@@ -6,7 +6,7 @@ import { Mic, MessageSquare, Play, BarChart2, CheckCircle2, Activity, Globe } fr
 
 export default function ComskillLandingPage() {
   return (
-      <div className="relative flex min-h-screen w-full flex-col overflow-hidden bg-[#FAF8F5] font-sans">
+      <div className="relative flex min-h-screen w-full flex-col overflow-hidden bg-[#FAF8F5] font-sans -mt-[15vh]">
         <style dangerouslySetInnerHTML={{__html: `
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800;900&display=swap');
         .font-sora { font-family: 'Sora', sans-serif; }
@@ -20,45 +20,6 @@ export default function ComskillLandingPage() {
           100% { height: 24px; }
         }
       `}} />
-
-
-
-          <nav className="relative z-20 flex justify-between items-center px-6 py-6 md:px-12 md:py-8">
-            {/* Logo */}
-            <div className="flex flex-col">
-              <div className="flex items-center">
-                <div className="relative flex items-center justify-center h-8 w-8 mr-2">
-                  <Mic className="text-[#1F7A8C] h-6 w-6 absolute bottom-0 left-0" strokeWidth={2.5} />
-                  <MessageSquare className="text-[#14213D] h-4 w-4 absolute top-0 right-0 fill-current" />
-                </div>
-                <span className="text-2xl font-sora font-bold text-[#14213D] tracking-tight">comskill</span>
-              </div>
-              <p className="hidden sm:block whitespace-nowrap text-[#FF7A59] text-[10px] font-bold uppercase tracking-wider mt-1 ml-1 font-inter">
-                Changing lives one practice at a time
-              </p>
-            </div>
-
-            {/* Center Links */}
-            <div className="hidden md:flex space-x-10">
-              {['HOME', 'PRACTICE', 'ABOUT'].map((link) => (
-                  <a key={link} href={`#${link.toLowerCase()}`} className="font-sora text-[11px] font-bold text-[#14213D] tracking-[0.2em] hover:text-[#1F7A8C] transition-colors">
-                    {link}
-                  </a>
-              ))}
-            </div>
-
-            {/* Right CTAs */}
-            <div className="flex items-center space-x-4">
-              <div className="hidden sm:flex items-center bg-white rounded-full p-1 shadow-sm border border-[#14213D]/10">
-                <Link href="/auth" className="bg-[#14213D] text-white px-5 py-2.5 rounded-full font-sora text-xs font-bold tracking-[0.1em] uppercase hover:bg-[#1a2a4c] transition-colors shadow-sm">
-                  Sign up
-                </Link>
-              </div>
-              <div className="flex items-center space-x-2 bg-white rounded-full px-3 py-1.5 shadow-sm border border-[#14213D]/10 text-[10px] font-sora font-bold text-[#14213D]">
-                <span className="text-[#14213D] bg-[#EFEAE2] px-2 py-0.5 rounded-full">EN</span>
-              </div>
-            </div>
-          </nav>
 
           <div className="absolute top-[20%] md:top-[25%] left-0 w-full flex justify-center items-center pointer-events-none select-none z-0 px-4">
             <h1
