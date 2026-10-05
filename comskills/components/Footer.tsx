@@ -33,7 +33,7 @@ const focus =
 export default function Footer() {
     return (
         <footer className="border-t border-[#14213D]/10 bg-[#FAF8F5] text-[#14213D]">
-            <div className="mx-auto max-w-7xl px-6 py-14 lg:px-10">
+            <div className="w-full px-6 py-14 lg:px-10 xl:px-16">
                 <div className="flex flex-col gap-12 md:flex-row md:justify-between">
                     {/* Brand */}
                     <div className="max-w-xs">
