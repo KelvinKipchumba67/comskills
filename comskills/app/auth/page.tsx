@@ -22,10 +22,10 @@ export default function AuthPage() {
         .font-inter { font-family: 'Inter', sans-serif; }
       `}</style>
 
-            <div className="w-full lg:w-[45%] flex flex-col relative px-8 py-12 lg:px-16 xl:px-24 bg-[#FAF8F5]">
+            <div className="w-full lg:w-[45%] flex flex-col relative px-8 pt-6 pb-12 lg:px-16 xl:px-24 bg-[#FAF8F5]">
 
                 {/* Form Container */}
-                <div className="max-w-[400px] w-full mx-auto flex-grow flex flex-col justify-center mt-4 lg:mt-0">
+                <div className="max-w-[400px] w-full mx-auto flex flex-col justify-start">
 
                     <h1 className="text-4xl lg:text-[44px] font-sora font-bold text-[#14213D] mb-3">
                         {isSignIn ? 'Sign in' : 'Sign up'}
