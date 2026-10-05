@@ -24,20 +24,6 @@ export default function AuthPage() {
 
             <div className="w-full lg:w-[45%] flex flex-col relative px-8 py-12 lg:px-16 xl:px-24 bg-[#FAF8F5]">
 
-                {/* Logo Area */}
-                <div className="flex flex-col mb-16 lg:absolute lg:top-12 lg:left-16 xl:left-24 lg:mb-0">
-                    <div className="flex items-center">
-                        <div className="relative flex items-center justify-center h-8 w-8 mr-2">
-                            <Mic className="text-[#1F7A8C] h-6 w-6 absolute bottom-0 left-0" strokeWidth={2.5} />
-                            <MessageSquare className="text-[#14213D] h-4 w-4 absolute top-0 right-0 fill-current" />
-                        </div>
-                        <span className="text-2xl font-sora font-bold text-[#14213D] tracking-tight">comskill</span>
-                    </div>
-                    <p className="text-[#FF7A59] text-[10px] font-bold uppercase tracking-wider mt-1 ml-1 font-inter">
-                        Changing lives one practice at a time
-                    </p>
-                </div>
-
                 {/* Form Container */}
                 <div className="max-w-[400px] w-full mx-auto flex-grow flex flex-col justify-center mt-4 lg:mt-0">
 
@@ -61,7 +47,7 @@ export default function AuthPage() {
                                 <label className="block text-[13px] font-medium text-[#14213D]">Full Name</label>
                                 <input
                                     type="text"
-                                    placeholder="Jane Doe"
+                                    placeholder="Kelvin Kipchumba"
                                     className="w-full px-4 py-3 rounded-lg border border-[#8A94A6]/40 bg-white text-[#14213D] placeholder-[#8A94A6] focus:outline-none focus:ring-2 focus:ring-[#1F7A8C]/30 focus:border-[#1F7A8C] transition-all"
                                 />
                             </div>
@@ -71,7 +57,7 @@ export default function AuthPage() {
                             <label className="block text-[13px] font-medium text-[#14213D]">E-mail</label>
                             <input
                                 type="email"
-                                placeholder="example@gmail.com"
+                                placeholder="kelvin@gmail.com"
                                 className="w-full px-4 py-3 rounded-lg border border-[#8A94A6]/40 bg-white text-[#14213D] placeholder-[#8A94A6] focus:outline-none focus:ring-2 focus:ring-[#1F7A8C]/30 focus:border-[#1F7A8C] transition-all"
                             />
                         </div>
