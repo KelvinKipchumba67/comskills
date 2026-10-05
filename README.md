@@ -2,7 +2,7 @@
 
 **Your personal AI communication coach.**
 
-Comskill turns proven speaking techniques into one AI-operated feedback network built for fluency. I built this project because of the passion I have for developing communication skills, since at one point in my life I struggled with communication skills. At the moment I'm not where I want to be but I'm also not where I started.
+Comskill turns proven speaking techniques into one AI-operated feedback network built for fluency. I built this project because of the passion I have for developing communication skills, since at one point in my life I wanted to be better with communication skills. At the moment I'm not where I want to be but I'm also not where I started  because of my efforts to get better at it.
 
 ![comskills landing page](./comskills/public/screenshot.png) 
 
