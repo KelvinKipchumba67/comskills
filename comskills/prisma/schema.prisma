@@ -1,0 +1,24 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Recording {
+  id        String          @id @default(uuid())
+  userId    String
+  path      String
+  seconds   Int
+  sizeBytes Int
+  mimeType  String
+  status    RecordingStatus @default(UPLOADING)
+  createdAt DateTime        @default(now())
+}
+
+enum RecordingStatus {
+  UPLOADING
+  READY
+}
