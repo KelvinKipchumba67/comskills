@@ -46,9 +46,12 @@ export default function ComskillLandingPage() {
               </p>
 
               <div className="flex items-center space-x-6">
-                <button className="font-sora text-[11px] font-bold tracking-[0.15em] bg-[#14213D] hover:bg-[#1d2f57] text-white px-8 py-4 rounded-full transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+                <Link
+                    href="/about"
+                    className="font-sora text-[11px] font-bold tracking-[0.15em] bg-[#14213D] hover:bg-[#1d2f57] text-white px-8 py-4 rounded-full transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+                >
                   ABOUT COMSKILLS
-                </button>
+                </Link>
                 <button className="font-sora text-[11px] font-bold tracking-[0.15em] text-[#14213D] hover:text-[#1F7A8C] transition-colors flex items-center group">
                   SEE HOW IT WORKS
                   <svg className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
