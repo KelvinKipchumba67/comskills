@@ -45,7 +45,7 @@ export default function AboutSections() {
                     <div className="absolute bottom-2 left-6 right-6 h-[130px] -rotate-[5deg] skew-x-[-20deg] rounded-3xl border border-white bg-[#EFEAE2] opacity-80 shadow-xl" />
                     <div className="absolute left-2 top-4 z-10 max-w-[200px] rounded-2xl bg-white p-4 shadow-xl md:left-0">
                         <p className="font-sora text-sm font-bold">Hi, I&apos;m {MASCOT_NAME}</p>
-                        <p className="mt-1 text-xs text-[#4A5568]">Press record and let&apos;s warm up your voice.</p>
+                        <p className="mt-1 text-xs text-[#4A5568]">Welcome, comskills is a platform to practice communicating, learn and improve on communication skills. Let&apos;s warm up your voice.</p>
                         <span aria-hidden="true" className="absolute -bottom-2 left-8 h-4 w-4 rotate-45 bg-white" />
                     </div>
                     <Mascot mood="talking" size={270} title={`${MASCOT_NAME}, the Comskill mascot`} className="relative z-20 mb-4" />
@@ -76,12 +76,12 @@ export default function AboutSections() {
             <section className="w-full bg-white px-6 py-20 lg:px-10 lg:py-28 xl:px-16">
                 <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
                     <div>
-                        <h1 className="mt-4 font-sora text-[clamp(30px,4.5vw,68px)] ...">
+                        <h1 className="mt-4 font-sora text-[clamp(30px,4.5vw,68px)]">
                             Speaking well is a skill. Skills grow with practice.
                         </h1>
                     </div>
                     <div>
-                        <p className="text-[15px] leading-relaxed text-[#4A5568]">...</p>
+                        <p className="text-[15px] leading-relaxed text-[#4A5568]"></p>
                         <div className="mt-8 flex flex-wrap items-center gap-6">
                             {/* the two links, unchanged */}
                         </div>
