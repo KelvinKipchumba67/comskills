@@ -98,7 +98,7 @@ export default function Navbar() {
                             </Link>
                         ))}
                         <Link
-                            href="/signup"
+                            href="/auth"
                             onClick={() => setOpen(false)}
                             className={`${label} mt-2 rounded-full bg-[#14213D] px-5 py-3.5 text-center text-white ${focus}`}
                         >
