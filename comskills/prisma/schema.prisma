@@ -16,11 +16,24 @@ model Recording {
   mimeType  String
   status    RecordingStatus @default(UPLOADING)
   createdAt DateTime        @default(now())
+
+  analysisStatus AnalysisStatus @default(NONE)
+  transcript     String?
+  analysis       Json?
+  analysisError  String?
+  analyzedAt     DateTime?
 }
 
 enum RecordingStatus {
   UPLOADING
   READY
+}
+
+enum AnalysisStatus {
+  NONE
+  PROCESSING
+  DONE
+  FAILED
 }
 
 model LessonProgress {
