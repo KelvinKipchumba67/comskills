@@ -2,10 +2,12 @@
 
 import Link from 'next/link';
 import React from 'react';
+import AboutSections from '@/components/AboutSections';
 import { Mic, MessageSquare, Play, BarChart2, CheckCircle2, Activity, Globe } from 'lucide-react';
 
 export default function ComskillLandingPage() {
   return (
+      <>
       <div className="relative flex min-h-screen w-full flex-col overflow-hidden bg-[#FAF8F5] font-sans -mt-[15vh]">
         <style dangerouslySetInnerHTML={{__html: `
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800;900&display=swap');
@@ -125,5 +127,7 @@ export default function ComskillLandingPage() {
 
           </div>
         </div>
+        <AboutSections />
+      </>
   );
 }
