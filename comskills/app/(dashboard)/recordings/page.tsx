@@ -5,8 +5,10 @@ import { prisma } from "@/lib/prisma";
 import { getUserId } from "@/lib/auth";
 import { supabaseAdmin, RECORDINGS_BUCKET } from "@/lib/supabaseAdmin";
 import { formatDuration, formatSize } from "@/lib/format";
+import type { AnalysisResult } from "@/lib/analysis/types";
 import LocalTime from "@/components/LocalTime";
 import DeleteRecordingButton from "@/components/DeleteRecordingButton";
+import RecordingWorkspace from "@/components/RecordingWorkspace";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +20,7 @@ const focus =
 export default async function RecordingPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     const userId = await getUserId();
-    if (!userId) redirect("/signup");
+    if (!userId) redirect("/auth");
 
     const rec = await prisma.recording.findFirst({ where: { id, userId } });
     if (!rec || rec.status !== "READY") notFound();
@@ -43,24 +45,23 @@ export default async function RecordingPage({ params }: { params: Promise<{ id: 
                 <DeleteRecordingButton id={rec.id} redirectTo="/recordings" />
             </div>
 
-            <div className="overflow-hidden rounded-[28px] bg-black">
-                {data?.signedUrl ? (
-                    <video src={data.signedUrl} controls playsInline className="aspect-video w-full" />
-                ) : (
-                    <p className="grid aspect-video place-items-center px-6 text-center text-sm text-[#C9C3B8]">
-                        This recording can&apos;t be played right now. Refresh the page to try again.
-                    </p>
-                )}
-            </div>
-
-            <dl className="mt-6 grid gap-4 sm:grid-cols-3">
-                {meta.map((m) => (
-                    <div key={m.label} className={`${card} px-5 py-4`}>
-                        <dt className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#4A5568]">{m.label}</dt>
-                        <dd className={`${display} mt-1 text-lg font-bold`}>{m.value}</dd>
-                    </div>
-                ))}
-            </dl>
+            <RecordingWorkspace
+                id={rec.id}
+                videoUrl={data?.signedUrl ?? null}
+                status={rec.analysisStatus}
+                error={rec.analysisError}
+                analysis={(rec.analysis as AnalysisResult | null) ?? null}
+                transcript={rec.transcript}
+            >
+                <dl className="mt-6 grid gap-4 sm:grid-cols-3">
+                    {meta.map((m) => (
+                        <div key={m.label} className={`${card} px-5 py-4`}>
+                            <dt className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#4A5568]">{m.label}</dt>
+                            <dd className={`${display} mt-1 text-lg font-bold`}>{m.value}</dd>
+                        </div>
+                    ))}
+                </dl>
+            </RecordingWorkspace>
         </div>
     );
 }
