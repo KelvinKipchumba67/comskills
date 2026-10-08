@@ -22,3 +22,11 @@ enum RecordingStatus {
   UPLOADING
   READY
 }
+
+model LessonProgress {
+  userId      String
+  lessonSlug  String
+  completedAt DateTime @default(now())
+
+  @@id([userId, lessonSlug])
+}
