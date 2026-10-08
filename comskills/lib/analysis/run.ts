@@ -1,0 +1,47 @@
+import { prisma } from "@/lib/prisma"; // adjust to wherever you export your Prisma client
+import { supabaseAdmin, RECORDINGS_BUCKET } from "@/lib/supabaseAdmin";
+import { transcribeFromUrl, deleteTranscript } from "./transcribe";
+import { computeMetrics } from "./metrics";
+import { buildInsights } from "./insights";
+import { coachFeedback } from "./coach";
+import type { AnalysisResult } from "./types";
+
+// Runs the whole pipeline for one recording and saves the outcome.
+// The caller has already marked the recording PROCESSING.
+export async function runAnalysis(rec: { id: string; path: string }) {
+    try {
+        const { data, error } = await supabaseAdmin.storage.from(RECORDINGS_BUCKET).createSignedUrl(rec.path, 900);
+        if (error || !data) throw new Error("Could not read the recording");
+
+        const t = await transcribeFromUrl(data.signedUrl);
+        const metrics = computeMetrics(t.words);
+        const insights = buildInsights(metrics);
+        const coached = metrics.enoughSpeech ? await coachFeedback(t.text, metrics, insights) : null;
+
+        const result: AnalysisResult = {
+            version: 1,
+            metrics,
+            insights,
+            coach: coached?.coach ?? null,
+            coachModel: coached?.model ?? null,
+        };
+
+        await prisma.recording.update({
+            where: { id: rec.id },
+            data: {
+                analysisStatus: "DONE",
+                transcript: t.text,
+                analysis: JSON.parse(JSON.stringify(result)),
+                analysisError: null,
+                analyzedAt: new Date(),
+            },
+        });
+        await deleteTranscript(t.id);
+    } catch (e) {
+        console.error("analysis failed:", e instanceof Error ? e.message : "unknown");
+        await prisma.recording.update({
+            where: { id: rec.id },
+            data: { analysisStatus: "FAILED", analysisError: "We couldn't analyze this recording. Please try again." },
+        });
+    }
+}
