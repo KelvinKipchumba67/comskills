@@ -1,25 +1,28 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma"; // adjust to wherever you export your Prisma client
+import { prisma } from "@/lib/prisma";
 import { getUserId } from "@/lib/auth";
-import { runAnalysis } from "@/lib/analysis/run";
+import { runAnalysis, rerunCoach } from "@/lib/analysis/run";
 
-export const maxDuration = 120; // seconds; analysis usually takes well under a minute
+export const maxDuration = 120;
 
-const STALE_MS = 5 * 60_000;
+const STALE_MS = 3 * 60_000;
 
-// While an analysis runs, "analyzedAt" holds the time it started, so a crashed run can be retried after 5 minutes.
-export async function POST(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
     const userId = await getUserId();
     if (!userId) return NextResponse.json({ error: "Not signed in" }, { status: 401 });
     const { id } = await params;
+    const query = new URL(req.url).searchParams;
 
     const rec = await prisma.recording.findFirst({ where: { id, userId } });
     if (!rec || rec.status !== "READY") return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-    // Already done: don't spend more credits on a repeat click
-    if (rec.analysisStatus === "DONE") return NextResponse.json({ status: "DONE" });
+    if (query.get("only") === "coach") {
+        if (rec.analysisStatus !== "DONE") return NextResponse.json({ error: "Analyze the recording first" }, { status: 409 });
+        await rerunCoach(rec);
+        return NextResponse.json({ status: "DONE" });
+    }
 
-    // Claim it. Only one run at a time per recording.
+    if (rec.analysisStatus === "DONE" && query.get("force") !== "1") return NextResponse.json({ status: "DONE" });
     const claimed = await prisma.recording.updateMany({
         where: {
             id,
