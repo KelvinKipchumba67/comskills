@@ -13,6 +13,10 @@ const focus =
     "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1F7A8C]";
 const btn =
     "inline-flex h-[52px] items-center gap-2.5 rounded-full bg-[#14213D] px-[30px] text-xs font-extrabold uppercase tracking-[0.14em] text-white shadow-[0_0_0_5px_rgba(255,255,255,0.8)] hover:bg-[#1d2f55] disabled:opacity-60";
+const smallBtn =
+    "inline-flex items-center rounded-full bg-[#14213D] px-5 py-2 text-xs font-bold text-white hover:bg-[#1d2f55] disabled:opacity-60";
+
+const STUCK_MS = 190_000; // a run that has been going this long has almost certainly stopped
 
 type Status = "NONE" | "PROCESSING" | "DONE" | "FAILED";
 
@@ -23,34 +27,63 @@ type Props = {
     error: string | null;
     analysis: AnalysisResult | null;
     transcript: string | null;
+    startedAt: string | null; // when the current analysis began
     children?: React.ReactNode; // shown between the video and the feedback
 };
 
-export default function RecordingWorkspace({ id, videoUrl, status, error, analysis, transcript, children }: Props) {
+export default function RecordingWorkspace({
+                                               id, videoUrl, status, error, analysis, transcript, startedAt, children,
+                                           }: Props) {
     const router = useRouter();
     const videoRef = useRef<HTMLVideoElement>(null);
     const [running, setRunning] = useState(false);
+    const [coachBusy, setCoachBusy] = useState(false);
     const [startError, setStartError] = useState<string | null>(null);
+    const [now, setNow] = useState(0);
 
     const busy = running || status === "PROCESSING";
+    const stuck = status === "PROCESSING" && !running && !!startedAt && now - new Date(startedAt).getTime() > STUCK_MS;
 
     // If the page loads while an analysis is running, keep checking until it finishes.
     useEffect(() => {
         if (status !== "PROCESSING" || running) return;
-        const t = setInterval(() => router.refresh(), 4000);
+        setNow(Date.now());
+        const t = setInterval(() => {
+            setNow(Date.now());
+            router.refresh();
+        }, 4000);
         return () => clearInterval(t);
     }, [status, running, router]);
 
-    async function analyze() {
+    async function post(query: string) {
+        const res = await fetch(`/api/recordings/${id}/analyze${query}`, { method: "POST" });
+        if (!res.ok && res.status !== 409) throw new Error();
+    }
+
+    async function analyze(force = false) {
         setRunning(true);
         setStartError(null);
         try {
-            const res = await fetch(`/api/recordings/${id}/analyze`, { method: "POST" });
-            if (!res.ok && res.status !== 409) throw new Error();
+            await post(force ? "?force=1" : "");
         } catch {
             setStartError("Couldn't start the analysis. Check your connection and try again.");
         }
         setRunning(false);
+        router.refresh();
+    }
+
+    async function analyzeAgain() {
+        if (window.confirm("Run the analysis again? This replaces the current results.")) await analyze(true);
+    }
+
+    async function retryCoach() {
+        setCoachBusy(true);
+        try {
+            await post("?only=coach");
+        } catch {
+            // the refreshed page will still show why coaching is missing
+        }
+        setCoachBusy(false);
         router.refresh();
     }
 
@@ -78,23 +111,37 @@ export default function RecordingWorkspace({ id, videoUrl, status, error, analys
 
             <section className="mt-8" aria-live="polite">
                 {status === "DONE" && analysis ? (
-                    <Results analysis={analysis} transcript={transcript} seek={seek} />
+                    <Results
+                        analysis={analysis}
+                        transcript={transcript}
+                        seek={seek}
+                        coachBusy={coachBusy}
+                        onRetryCoach={retryCoach}
+                        onAnalyzeAgain={analyzeAgain}
+                        againBusy={running}
+                    />
                 ) : (
                     <div className={`${card} px-6 py-8`}>
                         <h2 className={`${display} text-xl font-extrabold`}>
-                            {busy ? "Listening to your recording..." : "Get your feedback"}
+                            {stuck ? "This is taking too long" : busy ? "Listening to your recording..." : "Get your feedback"}
                         </h2>
                         <p className="mt-2 max-w-xl text-sm leading-relaxed text-[#4A5568]">
-                            {busy
-                                ? "This usually takes under a minute."
-                                : "See your pace, filler words and pauses, plus coaching on what went well and what to work on."}
+                            {stuck
+                                ? "The last attempt seems to have stopped. You can safely start it again."
+                                : busy
+                                    ? "This usually takes under a minute."
+                                    : "See your pace, filler words and pauses, plus coaching on what went well and what to work on."}
                         </p>
 
-                        {busy ? (
-                            <div className="mt-6 h-8 w-8 animate-spin rounded-full border-4 border-[#EFEAE2] border-t-[#14213D] motion-reduce:animate-none" role="status" aria-label="Analyzing" />
+                        {busy && !stuck ? (
+                            <div
+                                className="mt-6 h-8 w-8 animate-spin rounded-full border-4 border-[#EFEAE2] border-t-[#14213D] motion-reduce:animate-none"
+                                role="status"
+                                aria-label="Analyzing"
+                            />
                         ) : (
-                            <button onClick={analyze} className={`${btn} mt-6 ${focus}`}>
-                                Analyze this recording
+                            <button onClick={() => analyze()} disabled={running} className={`${btn} mt-6 ${focus}`}>
+                                {stuck ? "Try again" : "Analyze this recording"}
                             </button>
                         )}
 
@@ -106,7 +153,7 @@ export default function RecordingWorkspace({ id, videoUrl, status, error, analys
 
                         <p className="mt-6 max-w-xl text-xs leading-relaxed text-[#4A5568]">
                             When you analyze, the audio is sent to AssemblyAI to be transcribed, and the transcript text goes to an AI
-                            provider (through OpenRouter) to write your feedback. Your video stays in your private storage.
+                            language-model provider to write your feedback. Your video stays in your private storage.
                         </p>
                     </div>
                 )}
@@ -133,7 +180,17 @@ function Chips({ moments, seek }: { moments?: Moment[]; seek: (at: number) => vo
     );
 }
 
-function Results({ analysis, transcript, seek }: { analysis: AnalysisResult; transcript: string | null; seek: (at: number) => void }) {
+type ResultsProps = {
+    analysis: AnalysisResult;
+    transcript: string | null;
+    seek: (at: number) => void;
+    coachBusy: boolean;
+    onRetryCoach: () => void;
+    onAnalyzeAgain: () => void;
+    againBusy: boolean;
+};
+
+function Results({ analysis, transcript, seek, coachBusy, onRetryCoach, onAnalyzeAgain, againBusy }: ResultsProps) {
     const { metrics: m, insights, coach } = analysis;
     const strengths = insights.filter((i) => i.kind === "strength");
     const improves = insights.filter((i) => i.kind === "improve");
@@ -160,11 +217,17 @@ function Results({ analysis, transcript, seek }: { analysis: AnalysisResult; tra
                         </p>
                     )}
                 </div>
-            ) : (
-                <div className="rounded-[28px] bg-[#EFEAE2] px-7 py-5 text-sm text-[#4A5568]">
-                    The written coaching notes aren&apos;t available for this recording. The measurements below still apply.
+            ) : m.enoughSpeech ? (
+                <div className="flex flex-wrap items-center justify-between gap-4 rounded-[28px] bg-[#EFEAE2] px-7 py-5">
+                    <p className="max-w-xl text-sm leading-relaxed text-[#4A5568]">
+                        The written coaching isn&apos;t available for this recording
+                        {analysis.coachError ? `: ${analysis.coachError}.` : "."} The measurements below still apply.
+                    </p>
+                    <button onClick={onRetryCoach} disabled={coachBusy} className={`${smallBtn} ${focus}`}>
+                        {coachBusy ? "Trying..." : "Retry coaching"}
+                    </button>
                 </div>
-            )}
+            ) : null}
 
             {m.enoughSpeech && (
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -184,39 +247,31 @@ function Results({ analysis, transcript, seek }: { analysis: AnalysisResult; tra
                         <span className="grid h-7 w-7 place-items-center rounded-full bg-[#2FA66A] text-white"><Check size={15} /></span>
                         What went well
                     </h2>
-                    {strengths.length === 0 ? (
-                        <p className="mt-4 text-sm text-[#4A5568]">Nothing stood out yet. Keep practicing and wins will show up here.</p>
-                    ) : (
-                        <ul className="mt-4 grid gap-5">
-                            {strengths.map((s) => (
-                                <li key={s.title}>
-                                    <p className="text-sm font-bold">{s.title}</p>
-                                    <p className="mt-1 text-sm leading-relaxed text-[#4A5568]">{s.detail}</p>
-                                    <Chips moments={s.moments} seek={seek} />
-                                </li>
-                            ))}
-                        </ul>
-                    )}
+                    <ul className="mt-4 grid gap-5">
+                        {strengths.map((s) => (
+                            <li key={s.title}>
+                                <p className="text-sm font-bold">{s.title}</p>
+                                <p className="mt-1 text-sm leading-relaxed text-[#4A5568]">{s.detail}</p>
+                                <Chips moments={s.moments} seek={seek} />
+                            </li>
+                        ))}
+                    </ul>
                 </div>
 
                 <div className={`${card} px-6 py-6`}>
                     <h2 className={`${display} flex items-center gap-2 text-lg font-bold`}>
-                        <span className="grid h-7 w-7 place-items-center rounded-full bg-[#FF7A59] text-[#14213D] text-sm font-extrabold">!</span>
+                        <span className="grid h-7 w-7 place-items-center rounded-full bg-[#FF7A59] text-sm font-extrabold text-[#14213D]">!</span>
                         What to work on
                     </h2>
-                    {improves.length === 0 ? (
-                        <p className="mt-4 text-sm text-[#4A5568]">No clear problems in the numbers. Nice work.</p>
-                    ) : (
-                        <ul className="mt-4 grid gap-5">
-                            {improves.map((s) => (
-                                <li key={s.title}>
-                                    <p className="text-sm font-bold">{s.title}</p>
-                                    <p className="mt-1 text-sm leading-relaxed text-[#4A5568]">{s.detail}</p>
-                                    <Chips moments={s.moments} seek={seek} />
-                                </li>
-                            ))}
-                        </ul>
-                    )}
+                    <ul className="mt-4 grid gap-5">
+                        {improves.map((s) => (
+                            <li key={s.title}>
+                                <p className="text-sm font-bold">{s.title}</p>
+                                <p className="mt-1 text-sm leading-relaxed text-[#4A5568]">{s.detail}</p>
+                                <Chips moments={s.moments} seek={seek} />
+                            </li>
+                        ))}
+                    </ul>
                 </div>
             </div>
 
@@ -255,6 +310,16 @@ function Results({ analysis, transcript, seek }: { analysis: AnalysisResult; tra
                     <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-[#4A5568]">{transcript}</p>
                 </details>
             )}
+
+            <div className="flex justify-end">
+                <button
+                    onClick={onAnalyzeAgain}
+                    disabled={againBusy}
+                    className={`rounded-full px-4 py-2 text-xs font-bold text-[#4A5568] hover:bg-[#EFEAE2] hover:text-[#14213D] disabled:opacity-60 ${focus}`}
+                >
+                    {againBusy ? "Analyzing again..." : "Analyze again"}
+                </button>
+            </div>
         </div>
     );
 }
