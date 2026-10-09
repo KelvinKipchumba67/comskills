@@ -1,14 +1,9 @@
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getUserId } from "@/lib/auth";
-import { supabaseAdmin, RECORDINGS_BUCKET } from "@/lib/supabaseAdmin";
 import { formatDuration, formatSize } from "@/lib/format";
-import type { AnalysisResult } from "@/lib/analysis/types";
 import LocalTime from "@/components/LocalTime";
-import DeleteRecordingButton from "@/components/DeleteRecordingButton";
-import RecordingWorkspace from "@/components/RecordingWorkspace";
 
 export const dynamic = "force-dynamic";
 
@@ -17,51 +12,63 @@ const card = "rounded-[28px] bg-white shadow-[0_20px_50px_-22px_rgba(20,33,61,0.
 const focus =
     "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1F7A8C]";
 
-export default async function RecordingPage({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = await params;
+const statusLabel: Record<string, string> = {
+    DONE: "Analyzed",
+    PROCESSING: "Analyzing",
+    FAILED: "Analysis failed",
+};
+
+export default async function RecordingsPage() {
     const userId = await getUserId();
     if (!userId) redirect("/auth");
 
-    const rec = await prisma.recording.findFirst({ where: { id, userId } });
-    if (!rec || rec.status !== "READY") notFound();
-
-    // The bucket is private, so playback uses a link that expires after an hour.
-    const { data } = await supabaseAdmin.storage.from(RECORDINGS_BUCKET).createSignedUrl(rec.path, 3600);
-
-    const meta = [
-        { label: "Length", value: formatDuration(rec.seconds) },
-        { label: "Size", value: formatSize(rec.sizeBytes) },
-        { label: "Recorded", value: <LocalTime iso={rec.createdAt.toISOString()} /> },
-    ];
+    // Newest first, and only recordings whose upload finished.
+    const recordings = await prisma.recording.findMany({
+        where: { userId, status: "READY" },
+        orderBy: { createdAt: "desc" },
+    });
 
     return (
         <div className="mx-auto max-w-[880px]">
-            <Link href="/recordings" className={`mb-2 inline-flex items-center gap-1.5 text-sm font-semibold text-[#4A5568] hover:text-[#14213D] ${focus}`}>
-                <ArrowLeft size={16} /> My recordings
-            </Link>
-
             <div className="flex items-center justify-between gap-4 pb-7 pt-2">
-                <h1 className={`${display} text-[clamp(28px,4vw,44px)] font-extrabold leading-[1.05]`}>Practice session</h1>
-                <DeleteRecordingButton id={rec.id} redirectTo="/recordings" />
+                <h1 className={`${display} text-[clamp(28px,4vw,44px)] font-extrabold leading-[1.05]`}>My recordings</h1>
+                <Link
+                    href="/practice"
+                    className={`rounded-full bg-[#FF7A59] px-5 py-2.5 text-sm font-bold text-[#14213D] ${focus}`}
+                >
+                    New recording
+                </Link>
             </div>
 
-            <RecordingWorkspace
-                id={rec.id}
-                videoUrl={data?.signedUrl ?? null}
-                status={rec.analysisStatus}
-                error={rec.analysisError}
-                analysis={(rec.analysis as AnalysisResult | null) ?? null}
-                transcript={rec.transcript}
-            >
-                <dl className="mt-6 grid gap-4 sm:grid-cols-3">
-                    {meta.map((m) => (
-                        <div key={m.label} className={`${card} px-5 py-4`}>
-                            <dt className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#4A5568]">{m.label}</dt>
-                            <dd className={`${display} mt-1 text-lg font-bold`}>{m.value}</dd>
-                        </div>
+            {recordings.length === 0 ? (
+                <div className={`${card} px-6 py-10 text-center`}>
+                    <p className={`${display} text-lg font-bold`}>No recordings yet</p>
+                    <p className="mt-1 text-sm text-[#4A5568]">Record a short practice take and it will show up here.</p>
+                </div>
+            ) : (
+                <ul className="grid gap-4">
+                    {recordings.map((rec) => (
+                        <li key={rec.id}>
+                            <Link
+                                href={`/recordings/${rec.id}`}
+                                className={`${card} flex items-center justify-between gap-4 px-6 py-5 ${focus}`}
+                            >
+                                <div>
+                                    <p className={`${display} text-lg font-bold`}>
+                                        <LocalTime iso={rec.createdAt.toISOString()} />
+                                    </p>
+                                    <p className="mt-1 text-sm text-[#4A5568]">
+                                        {formatDuration(rec.seconds)} · {formatSize(rec.sizeBytes)}
+                                    </p>
+                                </div>
+                                <span className="text-sm font-semibold text-[#1F7A8C]">
+                                    {statusLabel[rec.analysisStatus] ?? "Not analyzed"}
+                                </span>
+                            </Link>
+                        </li>
                     ))}
-                </dl>
-            </RecordingWorkspace>
+                </ul>
+            )}
         </div>
     );
 }
