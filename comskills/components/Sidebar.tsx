@@ -12,8 +12,8 @@ const focus =
     "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1F7A8C]";
 
 const NAV = [
-    { href: "/practice", label: "Practice", icon: Video },
     { href: "/#home", label: "Home", icon: Home },
+    { href: "/practice", label: "Practice", icon: Video },
     { href: "/dashboard", label: "Analytics", icon: LayoutDashboard },
     { href: "/recordings", label: "My recordings", icon: Film },
     { href: "/learning", label: "My learning", icon: BookOpen },
