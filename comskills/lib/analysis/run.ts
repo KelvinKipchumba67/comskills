@@ -22,8 +22,9 @@ export async function runAnalysis(rec: { id: string; path: string }) {
             version: 1,
             metrics,
             insights,
-            coach: coached?.coach ?? null,
-            coachModel: coached?.model ?? null,
+            coach: coached?.ok ? coached.coach : null,
+            coachModel: coached?.ok ? coached.model : null,
+            coachError: coached && !coached.ok ? coached.error : null,
         };
 
         await prisma.recording.update({
@@ -44,4 +45,20 @@ export async function runAnalysis(rec: { id: string; path: string }) {
             data: { analysisStatus: "FAILED", analysisError: "We couldn't analyze this recording. Please try again." },
         });
     }
+}
+
+// Re-runs only the written coaching, using the transcript and measurements we already saved.
+// Costs no transcription credits.
+export async function rerunCoach(rec: { id: string; transcript: string | null; analysis: unknown }) {
+    const a = rec.analysis as AnalysisResult | null;
+    if (!a || !rec.transcript) return;
+
+    const coached = await coachFeedback(rec.transcript, a.metrics, a.insights);
+    const next: AnalysisResult = {
+        ...a,
+        coach: coached.ok ? coached.coach : a.coach,
+        coachModel: coached.ok ? coached.model : a.coachModel,
+        coachError: coached.ok ? null : coached.error,
+    };
+    await prisma.recording.update({ where: { id: rec.id }, data: { analysis: JSON.parse(JSON.stringify(next)) } });
 }
