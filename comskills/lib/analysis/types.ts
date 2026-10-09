@@ -36,4 +36,5 @@ export type AnalysisResult = {
     insights: Insight[];
     coach: Coach | null;
     coachModel: string | null;
+    coachError?: string | null; // plain-language reason the written coaching is missing
 };
