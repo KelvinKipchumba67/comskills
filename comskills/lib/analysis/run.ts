@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma"; // adjust to wherever you export your Prisma client
+import { prisma } from "@/lib/prisma";
 import { supabaseAdmin, RECORDINGS_BUCKET } from "@/lib/supabaseAdmin";
 import { transcribeFromUrl, deleteTranscript } from "./transcribe";
 import { computeMetrics } from "./metrics";
@@ -6,8 +6,6 @@ import { buildInsights } from "./insights";
 import { coachFeedback } from "./coach";
 import type { AnalysisResult } from "./types";
 
-// Runs the whole pipeline for one recording and saves the outcome.
-// The caller has already marked the recording PROCESSING.
 export async function runAnalysis(rec: { id: string; path: string }) {
     try {
         const { data, error } = await supabaseAdmin.storage.from(RECORDINGS_BUCKET).createSignedUrl(rec.path, 900);
@@ -47,8 +45,6 @@ export async function runAnalysis(rec: { id: string; path: string }) {
     }
 }
 
-// Re-runs only the written coaching, using the transcript and measurements we already saved.
-// Costs no transcription credits.
 export async function rerunCoach(rec: { id: string; transcript: string | null; analysis: unknown }) {
     const a = rec.analysis as AnalysisResult | null;
     if (!a || !rec.transcript) return;
