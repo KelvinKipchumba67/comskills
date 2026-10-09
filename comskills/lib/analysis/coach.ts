@@ -10,8 +10,6 @@ Reply with ONLY a JSON object, with no markdown and no extra text, in exactly th
 {"summary": string (2 sentences), "strengths": string[] (1 to 3 items), "improvements": [{"issue": string, "tip": string}] (1 to 3 items), "nextFocus": string (one sentence), "structure": string (1 to 2 sentences about the opening, flow and ending)}`;
 
 const str = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
-
-// Models sometimes wrap JSON in fences or add thinking text, so pull out the first JSON object.
 export function parseCoach(raw: string): Coach | null {
     try {
         const text = raw.replace(/<think>[\s\S]*?<\/think>/g, "").replace(/```(?:json)?/g, "");
@@ -118,7 +116,6 @@ async function attempt(
     }
 }
 
-// Never throws. Tries each configured model in order. If all fail, the analysis still works and we keep the reason.
 export async function coachFeedback(transcript: string, m: Metrics, _insights: Insight[]): Promise<CoachOutcome> {
     const p = pickProvider();
     if (!p.key || p.models.length === 0) {
