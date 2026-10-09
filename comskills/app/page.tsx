@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import SeeHowItWorks from "@/components/SeeHowItWorks";
 import React from 'react';
 import AboutSections from '@/components/AboutSections';
 import { Mic, MessageSquare, Play, BarChart2, CheckCircle2, Activity, Globe } from 'lucide-react';
@@ -23,7 +24,7 @@ export default function ComskillLandingPage() {
         }
       `}} />
 
-          <div className="absolute top-[20%] md:top-[25%] left-0 w-full flex justify-center items-center pointer-events-none select-none z-0 px-4">
+        <div className="relative z-0 flex w-full items-center justify-center px-4 pb-6 pt-[22vh] pointer-events-none select-none lg:absolute lg:left-0 lg:top-[25%] lg:p-0 lg:px-4">
             <h1
                 className="font-sora font-black text-[#14213D] text-[18vw] leading-none tracking-tighter w-full text-center"
                 style={{
@@ -45,19 +46,14 @@ export default function ComskillLandingPage() {
                 We acquire proven speaking techniques and transform them into one integrated, AI-operated feedback network built for fluency.
               </p>
 
-              <div className="flex items-center space-x-6">
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
                 <Link
                     href="/about"
                     className="font-sora text-[11px] font-bold tracking-[0.15em] bg-[#14213D] hover:bg-[#1d2f57] text-white px-8 py-4 rounded-full transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
                 >
                   ABOUT COMSKILLS
                 </Link>
-                <button className="font-sora text-[11px] font-bold tracking-[0.15em] text-[#14213D] hover:text-[#1F7A8C] transition-colors flex items-center group">
-                  SEE HOW IT WORKS
-                  <svg className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
-                </button>
+                <SeeHowItWorks />
               </div>
             </div>
 
