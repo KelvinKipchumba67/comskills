@@ -41,9 +41,9 @@ export default function AboutSections() {
             {/* Hero: mascot on the left, the three steps on the right */}
             <section className="grid w-full items-center gap-12 px-6 pb-16 pt-10 lg:grid-cols-2 lg:gap-16 lg:px-10 lg:pb-24 lg:pt-16 xl:px-16">
                 {/* Mascot */}
-                <div className="relative mx-auto flex h-[340px] w-full max-w-[460px] items-end justify-center md:h-[420px]">
+                <div className="relative mx-auto flex w-full max-w-[460px] flex-col items-center gap-5 pb-4 md:h-[420px] md:flex-row md:items-end md:justify-center md:gap-0 md:pb-0">
                     <div className="absolute bottom-2 left-6 right-6 h-[130px] -rotate-[5deg] skew-x-[-20deg] rounded-3xl border border-white bg-[#EFEAE2] opacity-80 shadow-xl" />
-                    <div className="absolute left-2 top-4 z-10 max-w-[200px] rounded-2xl bg-white p-4 shadow-xl md:left-0">
+                    <div className="relative z-10 w-full max-w-[300px] rounded-2xl bg-white p-4 shadow-xl md:absolute md:left-0 md:top-4 md:w-auto md:max-w-[200px]">
                         <p className="font-sora text-sm font-bold">Hi, I&apos;m {MASCOT_NAME}</p>
                         <p className="mt-1 text-xs text-[#4A5568]">Welcome, comskills is a platform to practice communicating, learn and improve on communication skills. Let&apos;s warm up your voice.</p>
                         <span aria-hidden="true" className="absolute -bottom-2 left-8 h-4 w-4 rotate-45 bg-white" />
