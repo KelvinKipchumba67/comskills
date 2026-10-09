@@ -1,13 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-
-// Pages that need an account. Add any other signed-in-only page here.
-// A path matches itself and anything under it, so "/practice" also covers "/practice/anything".
 const PROTECTED = ["/practice", "/recordings", "/learning", "/dashboard", "/analytics"];
-
-// Keeps the login alive and blocks signed-out visitors from the app pages.
-// Access tokens expire after about an hour, and this refreshes them on every request
-// so people don't get signed out in the middle of a session.
 export async function updateSession(request: NextRequest) {
     let response = NextResponse.next({ request });
 
