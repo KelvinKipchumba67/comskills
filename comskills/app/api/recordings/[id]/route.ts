@@ -5,7 +5,7 @@ import { supabaseAdmin, RECORDINGS_BUCKET } from "@/lib/supabaseAdmin";
 
 type Ctx = { params: Promise<{ id: string }> };
 
-// Step 3 of saving: confirm the file landed, then mark the recording ready.
+// Step 3 of saving- confirm the file landed, then mark the recording ready.
 export async function PATCH(_req: Request, { params }: Ctx) {
     const userId = await getUserId();
     if (!userId) return NextResponse.json({ error: "Not signed in" }, { status: 401 });
@@ -21,7 +21,7 @@ export async function PATCH(_req: Request, { params }: Ctx) {
     return NextResponse.json({ id });
 }
 
-// Real delete: removes the file and the record together.
+// Real delete- removes the file and the record together.
 export async function DELETE(_req: Request, { params }: Ctx) {
     const userId = await getUserId();
     if (!userId) return NextResponse.json({ error: "Not signed in" }, { status: 401 });
