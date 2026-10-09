@@ -5,10 +5,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import Logo from "@/components/logo";
+import AuthButton from "@/components/AuthButton";
 
 const LINKS = [
     { href: "/", label: "Home" },
     { href: "/practice", label: "Practice" },
+    { href: "/about", label: "About" },
+];
+const MOBILE_LINKS = [
+    { href: "/", label: "Home" },
+    { href: "/practice", label: "Practice" },
+    { href: "/dashboard", label: "Analytics" },
+    { href: "/learning", label: "My learning" },
     { href: "/about", label: "About" },
 ];
 
@@ -27,12 +35,15 @@ export default function Navbar() {
         return () => window.removeEventListener("keydown", onKey);
     }, [open]);
 
+    // Close the menu after any navigation.
+    useEffect(() => setOpen(false), [pathname]);
+
     const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
     return (
         <header className="sticky top-0 z-40 w-full bg-[#FAF8F5]">
             <div className="flex w-full items-center justify-between px-6 py-5 md:grid md:grid-cols-[1fr_auto_1fr] lg:px-10 xl:px-16">
-                <Link href="/" aria-label="Comskill home" className={`block justify-self-start max-sm:[&_p]:hidden ${focus}`}>
+                <Link href="/" aria-label="Comskill home" className={`block min-w-0 justify-self-start max-[360px]:[&_p]:text-[8px] max-[360px]:[&_p]:tracking-normal ${focus}`}>
                     <Logo />
                 </Link>
 
@@ -54,12 +65,7 @@ export default function Navbar() {
 
                 {/* Actions */}
                 <div className="flex items-center gap-3 justify-self-end">
-                    <Link
-                        href="/auth"
-                        className={`${label} hidden rounded-full bg-[#14213D] px-6 py-3 text-white shadow-[0_0_0_4px_rgba(255,255,255,0.8)] hover:bg-[#1d2f55] md:inline-flex ${focus}`}
-                    >
-                        Sign up
-                    </Link>
+                    <AuthButton />
                     <button
                         type="button"
                         aria-label="Language: English"
@@ -83,8 +89,11 @@ export default function Navbar() {
             {/* Mobile menu */}
             {open && (
                 <div id="mobile-menu" className="px-6 pb-6 md:hidden">
-                    <nav aria-label="Mobile" className="flex flex-col gap-1 rounded-3xl bg-white p-3 shadow-[0_20px_50px_-22px_rgba(20,33,61,0.25)]">
-                        {LINKS.map(({ href, label: text }) => (
+                    <nav
+                        aria-label="Mobile"
+                        className="flex max-h-[calc(100vh-110px)] flex-col gap-1 overflow-y-auto rounded-3xl bg-white p-3 shadow-[0_20px_50px_-22px_rgba(20,33,61,0.25)]"
+                    >
+                        {MOBILE_LINKS.map(({ href, label: text }) => (
                             <Link
                                 key={href}
                                 href={href}
@@ -97,13 +106,7 @@ export default function Navbar() {
                                 {text}
                             </Link>
                         ))}
-                        <Link
-                            href="/auth"
-                            onClick={() => setOpen(false)}
-                            className={`${label} mt-2 rounded-full bg-[#14213D] px-5 py-3.5 text-center text-white ${focus}`}
-                        >
-                            Sign up
-                        </Link>
+                        <AuthButton variant="mobile" onNavigate={() => setOpen(false)} />
                     </nav>
                 </div>
             )}
