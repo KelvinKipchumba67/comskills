@@ -43,3 +43,13 @@ model LessonProgress {
 
   @@id([userId, lessonSlug])
 }
+
+model ContactMessage {
+  id        String   @id @default(uuid())
+  userId    String?
+  name      String
+  email     String
+  topic     String
+  message   String
+  createdAt DateTime @default(now())
+}
