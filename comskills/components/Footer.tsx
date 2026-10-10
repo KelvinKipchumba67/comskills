@@ -1,5 +1,17 @@
 import Link from "next/link";
 import Logo from "@/components/logo";
+const CREDIT = {
+    name: "Kelvin Kipchumba",
+    portfolio: "https://kelvinkipchumba.dev",
+    github: "https://github.com/KelvinKipchumba67",
+    linkedin: "https://www.linkedin.com/in/kelvin-kipchumba67",
+};
+
+const CREDIT_LINKS = [
+    { label: "Portfolio", href: CREDIT.portfolio },
+    { label: "GitHub", href: CREDIT.github },
+    { label: "LinkedIn", href: CREDIT.linkedin },
+].filter((l) => l.href);
 
 const COLUMNS = [
     {
@@ -15,7 +27,6 @@ const COLUMNS = [
         title: "Company",
         links: [
             { href: "/about", label: "About" },
-            { href: "/contact", label: "Contact" },
         ],
     },
     {
@@ -67,8 +78,27 @@ export default function Footer() {
                     </nav>
                 </div>
 
-                <div className="mt-12 flex flex-col gap-2 border-t border-[#14213D]/10 pt-6 font-inter text-xs text-[#4A5568] sm:flex-row sm:items-center sm:justify-between">
-                    <p>&copy; {new Date().getFullYear()} Comskill. All rights reserved.</p>
+                <div className="mt-12 flex flex-col gap-4 border-t border-[#14213D]/10 pt-6 font-inter text-xs text-[#4A5568] sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex flex-col gap-1.5">
+                        <p>&copy; {new Date().getFullYear()} Comskill. All rights reserved.</p>
+                        <p className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                            <span>
+                                Designed and built by{" "}
+                                <span className="font-semibold text-[#14213D]">{CREDIT.name}</span>
+                            </span>
+                            {CREDIT_LINKS.map((l) => (
+                                <a
+                                    key={l.label}
+                                    href={l.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`font-semibold text-[#1F7A8C] underline underline-offset-4 hover:text-[#14213D] ${focus}`}
+                                >
+                                    {l.label}
+                                </a>
+                            ))}
+                        </p>
+                    </div>
                     <p className="font-sora font-bold uppercase tracking-[0.18em] text-[#FF7A59]">
                         Changing lives one practice at a time
                     </p>
