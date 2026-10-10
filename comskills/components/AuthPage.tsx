@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Mic, Play, BarChart2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/Client";
+import { LEGAL } from "@/lib/legal";
 
 type Mode = "signin" | "signup";
 
@@ -21,6 +23,9 @@ function friendly(message: string): string {
     if (m.includes("valid email") || m.includes("invalid email")) return "Enter a valid email address.";
     return message;
 }
+
+const AGREE_MESSAGE = "Please confirm you have read and agree to the Terms and Privacy Policy to create an account.";
+const legalLink = "font-semibold text-[#1F7A8C] underline underline-offset-4 hover:opacity-80";
 
 type Provider = "google" | "facebook";
 
@@ -43,15 +48,21 @@ export default function AuthPage({
     const [error, setError] = useState<string | null>(initialError);
     const [oauthLoading, setOauthLoading] = useState<Provider | null>(null);
     const [notice, setNotice] = useState<string | null>(null);
+    const [agreed, setAgreed] = useState(false); // has read and accepted the Terms and Privacy pages
 
     function switchMode() {
         setMode(isSignIn ? "signup" : "signin");
+        setAgreed(false);
         setError(null);
         setNotice(null);
     }
 
     async function signInWithProvider(provider: Provider) {
         if (loading || oauthLoading) return;
+        if (!isSignIn && !agreed) {
+            setError(AGREE_MESSAGE);
+            return;
+        }
         setError(null);
         setNotice(null);
         setOauthLoading(provider);
@@ -74,6 +85,10 @@ export default function AuthPage({
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         if (loading) return;
+        if (!isSignIn && !agreed) {
+            setError(AGREE_MESSAGE);
+            return;
+        }
         setError(null);
         setNotice(null);
         setLoading(true);
@@ -91,19 +106,22 @@ export default function AuthPage({
                 const { data, error } = await supabase.auth.signUp({
                     email: email.trim(),
                     password,
-                    options: { data: { full_name: name.trim() } },
+                    options: {
+                        data: {
+                            full_name: name.trim(),
+                            terms_accepted_at: new Date().toISOString(),
+                            terms_version: LEGAL.updated,
+                        },
+                    },
                 });
                 if (error) {
                     setError(friendly(error.message));
                     return;
                 }
-                // With email confirmation on, Supabase answers success for an email that already exists
-                // but returns a user with no identities.
                 if (data.user && data.user.identities && data.user.identities.length === 0) {
                     setError("An account with this email already exists. Try signing in instead.");
                     return;
                 }
-                // No session means the person must confirm their email before signing in.
                 if (!data.session) {
                     setNotice(`We sent a confirmation link to ${email.trim()}. Open it, then come back and sign in.`);
                     return;
@@ -227,6 +245,30 @@ export default function AuthPage({
                             </div>
                         )}
 
+                        {!isSignIn && (
+                            <label htmlFor="agree" className="flex cursor-pointer items-start gap-3 text-sm leading-relaxed text-[#4A5568]">
+                                <input
+                                    id="agree"
+                                    type="checkbox"
+                                    required
+                                    checked={agreed}
+                                    onChange={(e) => setAgreed(e.target.checked)}
+                                    className="mt-1 h-4 w-4 shrink-0 cursor-pointer accent-[#1F7A8C]"
+                                />
+                                <span>
+                                    I have read and agree to the{" "}
+                                    <Link href="/terms" target="_blank" rel="noopener noreferrer" className={legalLink}>
+                                        Terms
+                                    </Link>{" "}
+                                    and{" "}
+                                    <Link href="/privacy" target="_blank" rel="noopener noreferrer" className={legalLink}>
+                                        Privacy Policy
+                                    </Link>
+                                    .
+                                </span>
+                            </label>
+                        )}
+
                         <button
                             type="submit"
                             disabled={loading}
@@ -253,7 +295,7 @@ export default function AuthPage({
                         <button
                             type="button"
                             onClick={() => signInWithProvider("google")}
-                            disabled={loading || oauthLoading !== null}
+                            disabled={loading || oauthLoading !== null || (!isSignIn && !agreed)}
                             className="w-full flex items-center justify-center space-x-3 py-3 border border-[#8A94A6]/40 rounded-lg text-[#14213D] font-medium hover:bg-black/5 disabled:opacity-60 disabled:cursor-not-allowed transition-colors bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1F7A8C]"
                         >
                             <svg className="w-5 h-5" viewBox="0 0 24 24" aria-hidden="true">
@@ -269,16 +311,34 @@ export default function AuthPage({
                         <button
                             type="button"
                             onClick={() => signInWithProvider("facebook")}
-                            disabled={loading || oauthLoading !== null}
+                            disabled={loading || oauthLoading !== null || (!isSignIn && !agreed)}
                             className="w-full flex items-center justify-center space-x-3 py-3 border border-[#8A94A6]/40 rounded-lg text-[#14213D] font-medium hover:bg-black/5 disabled:opacity-60 disabled:cursor-not-allowed transition-colors bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1F7A8C]"
                         >
                             <svg className="w-5 h-5 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                             </svg>
                             <span className="text-[15px]">
-                                {oauthLoading === "facebook" ? "Opening Facebook…" : "Continue with Facebook"}
+                                {oauthLoading === "facebook" ? "Opening Facebook…" : "Continue with Facebook(soon)"}
                             </span>
                         </button>
+
+                        {isSignIn ? (
+                            <p className="pt-1 text-xs leading-relaxed text-[#4A5568]">
+                                New here? Continuing with Google or Facebook creates an account, and means you agree to our{" "}
+                                <Link href="/terms" target="_blank" rel="noopener noreferrer" className={legalLink}>
+                                    Terms
+                                </Link>{" "}
+                                and{" "}
+                                <Link href="/privacy" target="_blank" rel="noopener noreferrer" className={legalLink}>
+                                    Privacy Policy
+                                </Link>
+                                .
+                            </p>
+                        ) : !agreed ? (
+                            <p className="pt-1 text-xs leading-relaxed text-[#4A5568]">
+                                Tick the box above to continue with Google or Facebook.
+                            </p>
+                        ) : null}
                     </div>
                 </div>
             </div>
