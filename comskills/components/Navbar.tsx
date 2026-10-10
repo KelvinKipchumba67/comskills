@@ -15,6 +15,7 @@ const LINKS = [
 const MOBILE_LINKS = [
     { href: "/", label: "Home" },
     { href: "/practice", label: "Practice" },
+    { href: "/recordings", label: "My recordings" },
     { href: "/dashboard", label: "Analytics" },
     { href: "/learning", label: "My learning" },
     { href: "/about", label: "About" },
@@ -48,7 +49,7 @@ export default function Navbar() {
                 </Link>
 
                 {/* Desktop links */}
-                <nav aria-label="Main" className="hidden items-center gap-10 md:flex">
+                <nav aria-label="Main" className="hidden items-center gap-6 md:flex lg:gap-10">
                     {LINKS.map(({ href, label: text }) => (
                         <Link
                             key={href}
