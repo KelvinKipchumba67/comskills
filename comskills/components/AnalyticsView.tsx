@@ -195,8 +195,6 @@ function compute(sessions: Session[]): Stats {
     };
 }
 
-// ---------- Small pieces ----------
-
 const statusStyle: Record<Status, string> = {
     improving: "bg-[#2FA66A]/15 text-[#1B6B44]",
     holding: "bg-[#EFEAE2] text-[#4A5568]",
@@ -331,8 +329,6 @@ function ProgressSection({ progress, notAnalyzed }: { progress: Progress; notAna
         </section>
     );
 }
-
-// ---------- Page content ----------
 
 export default function AnalyticsView({ sessions, notAnalyzed }: { sessions: Session[]; notAnalyzed: number }) {
     const [stats, setStats] = useState<Stats | null>(null);
