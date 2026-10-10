@@ -36,7 +36,7 @@ export default function ComskillLandingPage() {
             </h1>
           </div>
 
-          <div className="flex-grow flex flex-col lg:flex-row items-end justify-between px-6 pb-12 md:px-12 md:pb-16 lg:px-16 lg:pb-24 z-10 relative">
+        <div className="flex-grow flex flex-col lg:flex-row items-start lg:items-end justify-between px-6 pb-12 md:px-12 md:pb-16 lg:px-16 lg:pb-24 z-10 relative">
 
             <div className="w-full lg:w-1/2 max-w-[420px] mb-12 lg:mb-0">
               <h2 className="font-sora text-3xl md:text-[40px] font-bold text-[#14213D] leading-[1.1] mb-5">
@@ -58,6 +58,7 @@ export default function ComskillLandingPage() {
             </div>
 
             <div className="w-full lg:w-1/2 flex justify-center lg:justify-end items-end relative h-[300px] md:h-[400px]">
+              <div className="relative h-full w-full max-w-[520px]">
 
               {/* Base platform */}
               <div className="absolute bottom-4 right-4 md:right-12 w-[280px] h-[140px] bg-[#EFEAE2] rounded-3xl transform skew-x-[-20deg] rotate-[-5deg] shadow-xl border border-white opacity-80 z-0"></div>
@@ -123,6 +124,8 @@ export default function ComskillLandingPage() {
               </div>
 
             </div>
+            </div>
+
 
           </div>
         </div>
