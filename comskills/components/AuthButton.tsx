@@ -12,6 +12,7 @@ const label = "font-sora text-xs font-bold uppercase tracking-[0.18em]";
 const pill = `${label} inline-flex items-center rounded-full bg-[#14213D] px-6 py-3 text-white shadow-[0_0_0_4px_rgba(255,255,255,0.8)] hover:bg-[#1d2f55] ${focus}`;
 const menuItem =
     "block w-full rounded-xl px-3 py-2 text-left text-sm font-semibold text-[#14213D] hover:bg-[#EFEAE2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1F7A8C]";
+// Set inline so the spacing and left alignment can't be overridden by other styles.
 const itemStyle: CSSProperties = { display: "block", width: "100%", textAlign: "left", padding: "10px 14px" };
 const mobileItem = `${label} block w-full rounded-full px-5 py-3 text-left text-[#14213D] hover:bg-[#EFEAE2] ${focus}`;
 
@@ -39,6 +40,8 @@ export default function AuthButton({ variant = "desktop", onNavigate }: Props) {
         const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => setUser(session?.user ?? null));
         return () => sub.subscription.unsubscribe();
     }, []);
+
+    // Close the desktop menu on outside click or Escape.
     useEffect(() => {
         if (!open) return;
         const onDown = (e: MouseEvent) => {
@@ -106,7 +109,7 @@ export default function AuthButton({ variant = "desktop", onNavigate }: Props) {
                 aria-expanded={open}
                 className={pill}
             >
-                <span className="max-w-[200px] truncate">{greeting}</span>
+                <span className="max-w-[150px] truncate tracking-[0.1em] min-[900px]:max-w-[230px] lg:max-w-[260px] lg:tracking-[0.18em]">{greeting}</span>
             </button>
 
             {open && (
