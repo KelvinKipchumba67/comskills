@@ -4,7 +4,7 @@ import { getUserId } from "@/lib/auth";
 import { supabaseAdmin, RECORDINGS_BUCKET } from "@/lib/supabaseAdmin";
 
 const MAX_BYTES = 50 * 1024 * 1024;
-const MAX_SECONDS = 600;
+const MAX_SECONDS = 930;
 
 // Step 1 of saving: create the record and hand back a signed upload URL for this one file.
 export async function POST(req: Request) {
