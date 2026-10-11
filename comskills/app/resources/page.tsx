@@ -132,8 +132,6 @@ export default function ResourcesPage() {
                         ))}
                     </div>
                 </section>
-
-                {/* Further reading (only when you add some) */}
                 {READING.length > 0 && (
                     <section id="reading" aria-labelledby="reading-h" className="mt-16 scroll-mt-28 xl:mt-20">
                         <SectionHead
@@ -169,10 +167,8 @@ export default function ResourcesPage() {
                         </p>
                     </section>
                 )}
-
-                {/* Closing prompt, with the mascot */}
-                <ResourcesCta />
             </div>
+            <ResourcesCta />
         </div>
     );
 }
