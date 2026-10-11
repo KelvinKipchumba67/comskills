@@ -18,6 +18,7 @@ const MOBILE_LINKS = [
     { href: "/recordings", label: "My recordings" },
     { href: "/dashboard", label: "Analytics" },
     { href: "/learning", label: "My learning" },
+    { href: "/resources", label: "Resources" },
     { href: "/about", label: "About" },
 ];
 
