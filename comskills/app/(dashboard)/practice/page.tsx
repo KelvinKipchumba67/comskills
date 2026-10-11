@@ -153,7 +153,6 @@ export default function PracticePage() {
                                 </>
                             )}
                         </button>
-                        {/* TODO: enable once the follow-up flow exists */}
                         <button
                             disabled
                             title="Coming soon"
