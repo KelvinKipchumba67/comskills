@@ -8,6 +8,11 @@ export type RecorderStatus = "idle" | "requesting" | "ready" | "countdown" | "re
 //Picks the first one the browser supports.
 const MIME_TYPES = ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm", "video/mp4"];
 
+const MAX_SECONDS = 15 * 60;
+const VIDEO_BITS_PER_SECOND = 250_000;
+const AUDIO_BITS_PER_SECOND = 64_000;
+const STOP_AT_BYTES = 46 * 1024 * 1024;
+
 function pickMimeType() {
     if (typeof MediaRecorder === "undefined") return "";
     return MIME_TYPES.find((t) => MediaRecorder.isTypeSupported(t)) ?? "";
@@ -34,7 +39,7 @@ type Options = {
     onComplete: (result: RecordingResult) => void;
 };
 
-export function useRecorder({ countdownFrom = 3, maxSeconds = 300, onComplete }: Options) {
+export function useRecorder({ countdownFrom = 3, maxSeconds = MAX_SECONDS, onComplete }: Options) {
     const [status, setStatus] = useState<RecorderStatus>("idle");
     const [error, setError] = useState<string | null>(null);
     const [count, setCount] = useState(0);
@@ -44,6 +49,7 @@ export function useRecorder({ countdownFrom = 3, maxSeconds = 300, onComplete }:
     const streamRef = useRef<MediaStream | null>(null);
     const recorderRef = useRef<MediaRecorder | null>(null);
     const chunksRef = useRef<Blob[]>([]);
+    const bytesRef = useRef(0);
     const startedAtRef = useRef(0);
     const countdownRef = useRef<number | null>(null);
     const timerRef = useRef<number | null>(null);
@@ -74,7 +80,8 @@ export function useRecorder({ countdownFrom = 3, maxSeconds = 300, onComplete }:
                 throw new Error("unsupported");
             }
             const s = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } },
+                // A smaller picture looks cleaner than a large one squeezed into a low bitrate.
+                video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 360 } },
                 audio: { echoCancellation: true, noiseSuppression: true },
             });
             streamRef.current = s;
@@ -93,14 +100,17 @@ export function useRecorder({ countdownFrom = 3, maxSeconds = 300, onComplete }:
         const mimeType = pickMimeType();
         const recorder = new MediaRecorder(s, {
             ...(mimeType ? { mimeType } : {}),
-            // Capped so a 5-minute take stays around 40 MB.
-            videoBitsPerSecond: 1_000_000,
-            audioBitsPerSecond: 96_000,
+            videoBitsPerSecond: VIDEO_BITS_PER_SECOND,
+            audioBitsPerSecond: AUDIO_BITS_PER_SECOND,
         });
 
         chunksRef.current = [];
+        bytesRef.current = 0;
         recorder.ondataavailable = (e) => {
-            if (e.data.size) chunksRef.current.push(e.data);
+            if (!e.data.size) return;
+            chunksRef.current.push(e.data);
+            bytesRef.current += e.data.size;
+            if (bytesRef.current >= STOP_AT_BYTES && recorder.state === "recording") recorder.stop();
         };
         recorder.onstop = () => {
             const type = recorder.mimeType || mimeType || "video/webm";
@@ -149,8 +159,6 @@ export function useRecorder({ countdownFrom = 3, maxSeconds = 300, onComplete }:
     const stop = useCallback(() => {
         if (recorderRef.current?.state === "recording") recorderRef.current.stop();
     }, []);
-
-    // Leaving the page mid-recording releases the camera and throws the take away.
     useEffect(() => {
         return () => {
             clearTimers();
