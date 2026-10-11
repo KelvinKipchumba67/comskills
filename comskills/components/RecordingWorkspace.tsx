@@ -16,8 +16,7 @@ const btn =
 const smallBtn =
     "inline-flex items-center rounded-full bg-[#14213D] px-5 py-2 text-xs font-bold text-white hover:bg-[#1d2f55] disabled:opacity-60";
 
-const STUCK_MS = 190_000; // a run that has been going this long has almost certainly stopped
-
+const STUCK_MS = 190_000;
 type Status = "NONE" | "PROCESSING" | "DONE" | "FAILED";
 
 type Props = {
@@ -81,7 +80,6 @@ export default function RecordingWorkspace({
         try {
             await post("?only=coach");
         } catch {
-            // the refreshed page will still show why coaching is missing
         }
         setCoachBusy(false);
         router.refresh();
