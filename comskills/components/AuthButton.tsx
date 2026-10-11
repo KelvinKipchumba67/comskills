@@ -12,7 +12,6 @@ const label = "font-sora text-xs font-bold uppercase tracking-[0.18em]";
 const pill = `${label} inline-flex items-center rounded-full bg-[#14213D] px-6 py-3 text-white shadow-[0_0_0_4px_rgba(255,255,255,0.8)] hover:bg-[#1d2f55] ${focus}`;
 const menuItem =
     "block w-full rounded-xl px-3 py-2 text-left text-sm font-semibold text-[#14213D] hover:bg-[#EFEAE2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1F7A8C]";
-// Set inline so the spacing and left alignment can't be overridden by other styles.
 const itemStyle: CSSProperties = { display: "block", width: "100%", textAlign: "left", padding: "10px 14px" };
 const mobileItem = `${label} block w-full rounded-full px-5 py-3 text-left text-[#14213D] hover:bg-[#EFEAE2] ${focus}`;
 
@@ -122,6 +121,9 @@ export default function AuthButton({ variant = "desktop", onNavigate }: Props) {
                     </Link>
                     <Link role="menuitem" href="/recordings" onClick={() => setOpen(false)} className={menuItem} style={itemStyle}>
                         My recordings
+                    </Link>
+                    <Link role="menuitem" href="/resources" onClick={() => setOpen(false)} className={menuItem} style={itemStyle}>
+                        Resources
                     </Link>
                     <button role="menuitem" type="button" onClick={signOut} className={menuItem} style={itemStyle}>
                         Sign out
