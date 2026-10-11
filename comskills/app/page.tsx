@@ -24,7 +24,7 @@ export default function ComskillLandingPage() {
         }
       `}} />
 
-        <div className="relative z-0 flex w-full items-center justify-center px-4 pb-6 pt-[22vh] pointer-events-none select-none lg:absolute lg:left-0 lg:top-[25%] lg:p-0 lg:px-4">
+        <div className="relative z-0 flex w-full items-center justify-center px-4 pb-6 pt-[22vh] pointer-events-none select-none">
             <h1
                 className="font-sora font-black text-[#14213D] text-[18vw] leading-none tracking-tighter w-full text-center"
                 style={{
