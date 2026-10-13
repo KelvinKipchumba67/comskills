@@ -25,7 +25,7 @@ export default function Recorder({
     const live = r.status === "ready" || r.status === "countdown" || r.status === "recording";
 
     return (
-        <div className="relative grid aspect-video place-items-center overflow-hidden rounded-[28px] bg-[#14213D] p-6 text-center">
+        <div className="relative grid aspect-[3/4] place-items-center overflow-hidden rounded-[28px] bg-[#14213D] p-6 text-center sm:aspect-video">
             {/* Live preview (mirrored, like a mirror) */}
             <video
                 ref={videoRef}
