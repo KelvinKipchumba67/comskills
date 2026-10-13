@@ -10,7 +10,7 @@ const focus =
 
 export default function Recorder({
                                      onComplete,
-                                     maxSeconds = 930,
+                                     maxSeconds = 900,
                                  }: {
     onComplete: (result: RecordingResult) => void;
     maxSeconds?: number;
