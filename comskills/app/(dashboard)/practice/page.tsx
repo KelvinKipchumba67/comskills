@@ -60,10 +60,7 @@ export default function PracticePage() {
             </div>
 
             {!result ? (
-                <>
-                    <WordPrompt />
-                    <Recorder onComplete={setResult} />
-                </>
+                <Recorder onComplete={setResult} />
             ) : (
                 <>
                     <div role="status" className={`${card} mb-6 flex items-start gap-3.5 px-[22px] py-[18px]`}>
