@@ -164,6 +164,16 @@ export const DRILLS: Drill[] = [
             "Analyze all three and notice which had the fewest fillers and the steadiest pace.",
         ],
     },
+    {
+        title: "Random word minute",
+        time: "3 minutes",
+        steps: [
+            "Open Practice and read the word it gives you.",
+            "Take ten seconds to think of one point and one example.",
+            "Record one minute on that word.",
+            "Analyze it, then try a new word and aim to beat your filler count.",
+        ],
+    },
 ];
 
 // Outside resources. Each entry shows as a card that opens in a new tab.
