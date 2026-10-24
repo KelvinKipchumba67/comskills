@@ -6,6 +6,7 @@ import { RotateCcw, ArrowRight, CircleCheck, MessageCircleQuestion, Play, X } fr
 import Recorder from "@/components/Recorder";
 import { formatTime, type RecordingResult } from "@/hooks/useRecorder";
 import { uploadRecording } from "@/lib/uploadRecording";
+import WordPrompt from "@/components/WordPrompt";
 
 const display = "font-[family-name:var(--font-sora)] tracking-[-0.03em]";
 const card = "rounded-[28px] bg-white shadow-[0_20px_50px_-22px_rgba(20,33,61,0.2)]";
@@ -59,7 +60,10 @@ export default function PracticePage() {
             </div>
 
             {!result ? (
-                <Recorder onComplete={setResult} />
+                <>
+                    <WordPrompt />
+                    <Recorder onComplete={setResult} />
+                </>
             ) : (
                 <>
                     <div role="status" className={`${card} mb-6 flex items-start gap-3.5 px-[22px] py-[18px]`}>
