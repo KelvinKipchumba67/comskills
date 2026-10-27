@@ -164,35 +164,31 @@ export const DRILLS: Drill[] = [
             "Analyze all three and notice which had the fewest fillers and the steadiest pace.",
         ],
     },
-    {
-        title: "Random word minute",
-        time: "3 minutes",
-        steps: [
-            "Open Practice and read the word it gives you.",
-            "Take ten seconds to think of one point and one example.",
-            "Record one minute on that word.",
-            "Analyze it, then try a new word and aim to beat your filler count.",
-        ],
-    },
+    // {
+    //     title: "Random word minute",
+    //     time: "3 minutes",
+    //     steps: [
+    //         "Open Practice and read the word it gives you.",
+    //         "Take ten seconds to think of one point and one example.",
+    //         "Record one minute on that word.",
+    //         "Analyze it, then try a new word and aim to beat your filler count.",
+    //     ],
+    // },
 ];
-
-// Outside resources. Each entry shows as a card that opens in a new tab.
-// Add or remove entries freely. Leave the list empty and the "Keep learning" section is hidden.
-// Check the links now and then, because other sites move or remove pages.
 export const READING: Reading[] = [
     {
         title: "How to Write and Deliver a Speech",
-        source: "Toastmasters International",
+        source: "bbc uk",
         format: "Guide",
-        href: "https://www.toastmasters.org/resources/public-speaking-tips/preparing-a-speech",
+        href: "https://www.bbc.co.uk/bitesize/articles/z6vq7yc#zrr6hcw",
         note: "A start-to-finish guide to planning, writing and delivering a speech. A good first read.",
     },
     {
         title: "Public Speaking Tips",
-        source: "Toastmasters International",
+        source: "Havard DCE",
         format: "Articles",
-        href: "https://toastmasters.org/Resources/Public-Speaking-Tips",
-        note: "A hub of practical advice, including how to overcome the fear of speaking.",
+        href: "https://professional.dce.harvard.edu/blog/10-tips-for-improving-your-public-speaking-skills/#Here-Are-My-10-Tips-for-Public-Speaking",
+        note: "A hub of practical advice, 10 tips to improve your public speaking skills.",
     },
     {
         title: "How to Speak So That People Want to Listen",
@@ -209,11 +205,11 @@ export const READING: Reading[] = [
         note: "Good speakers are good listeners. Short, practical ideas for paying better attention.",
     },
     {
-        title: "How to Give a Killer Presentation",
-        source: "Chris Anderson, Harvard Business Review",
-        format: "Article",
-        href: "https://hbr.org/2013/06/how-to-give-a-killer-presentation",
-        note: "Lessons from TED's curator on framing your story and rehearsing. May need a free account to read in full.",
+        title: "3-2-1 A communication framework to help you stop rambling",
+        source: "Watch Vinh, communication skills teacher.",
+        format: "Video",
+        href: "https://youtu.be/5m-C5mwpmxU",
+        note: "Remember the goal is to improve how you communicate and with time you will get to where you want, do not aim for perfection just yet.",
     },
     {
         title: "Exploring Public Speaking",
@@ -223,10 +219,10 @@ export const READING: Reading[] = [
         note: "A complete, free public speaking course in book form, covering audiences, structure, introductions and conclusions.",
     },
     {
-        title: "Dynamic Public Speaking Specialization",
-        source: "University of Washington, Coursera",
-        format: "Online course",
-        href: "https://www.coursera.org/specializations/public-speaking",
-        note: "A four-course program on voice, gesture, storytelling and speechwriting. Coursera may charge for it.",
+        title: "5 Speaking Habits that make you sound weak.",
+        source: "vinh, communication skills teacher",
+        format: "video",
+        href: "https://youtu.be/35Q4krRIz9o",
+        note: "Did you know there some things you do, subconsciously, that make you sound and look weak?",
     },
 ];
