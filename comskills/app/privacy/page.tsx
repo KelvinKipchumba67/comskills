@@ -26,7 +26,7 @@ const PROCESSORS = [
     },
     {
         name: "Google Fonts",
-        what: "Delivers the typefaces on this site, so your browser contacts Google when a page loads.",
+        what: "Delivers the typefaces on this site, so the browser contacts Google when a page loads.",
     },
 ];
 
@@ -132,7 +132,13 @@ const sections: LegalSection[] = [
                 </p>
                 <p>
                     To delete a recording, open it from My recordings and choose Delete. That removes the video file and its
-                    analysis. To delete your whole account and everything in it, {contact}.
+                    analysis.
+                </p>
+                <p>
+                    To delete your whole account, open Account from the menu and choose Delete account. That permanently removes
+                    your recordings and video files, their transcripts and analysis, your lesson progress, messages you sent us
+                    through the contact form, and your sign in details. It cannot be undone. Routine backups kept by our hosting
+                    provider may hold copies for a short time before they expire.
                 </p>
             </>
         ),
@@ -203,7 +209,7 @@ export default function PrivacyPage() {
                 points: [
                     "We keep your account details, and the recordings you choose to save.",
                     "A recording is analyzed only when you ask for it.",
-                    "Your recordings are private to you, and you can delete them whenever you like.",
+                    "Your recordings are private to you, and you can delete them, or your whole account, whenever you like.",
                     "We don't sell your information or use it for ads.",
                 ],
             }}
