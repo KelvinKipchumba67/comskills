@@ -125,6 +125,9 @@ export default function AuthButton({ variant = "desktop", onNavigate }: Props) {
                     <Link role="menuitem" href="/resources" onClick={() => setOpen(false)} className={menuItem} style={itemStyle}>
                         Resources
                     </Link>
+                    <Link role="menuitem" href="/account" onClick={() => setOpen(false)} className={menuItem} style={itemStyle}>
+                        Account
+                    </Link>
                     <button role="menuitem" type="button" onClick={signOut} className={menuItem} style={itemStyle}>
                         Sign out
                     </button>
