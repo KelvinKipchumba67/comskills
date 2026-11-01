@@ -92,6 +92,9 @@ export default function AuthButton({ variant = "desktop", onNavigate }: Props) {
         return (
             <div className="mt-2 grid gap-1">
                 <p className={`${label} truncate rounded-full bg-[#14213D] px-5 py-3.5 text-center text-white`}>{greeting}</p>
+                <Link href="/account" onClick={onNavigate} className={mobileItem} style={itemStyle}>
+                    Account
+                </Link>
                 <button type="button" onClick={signOut} className={mobileItem} style={itemStyle}>
                     Sign out
                 </button>
