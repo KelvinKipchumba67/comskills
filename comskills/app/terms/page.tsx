@@ -121,8 +121,8 @@ const sections: LegalSection[] = [
         body: (
             <>
                 <p>
-                    You can stop using Comskill at any time, and delete your recordings from the app. To close your account,{" "}
-                    {contact}.
+                    You can stop using Comskill at any time. You can delete your recordings from the app, and you can delete
+                    your whole account from the Account page. Deleting your account is permanent.
                 </p>
                 <p>
                     We may suspend or close an account that breaks these terms or puts the service or other people at risk.
