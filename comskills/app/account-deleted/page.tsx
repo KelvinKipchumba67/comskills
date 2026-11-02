@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Mascot from "@/components/Mascot";
 
 export const metadata: Metadata = { title: "Account deleted | Comskill", robots: { index: false, follow: false } };
 
@@ -10,8 +11,11 @@ const focus =
 export default function AccountDeletedPage() {
     return (
         <div className="bg-[#FAF8F5]" style={{ background: "#FAF8F5", minHeight: "60vh" }}>
-            <div className="mx-auto max-w-[620px] px-6 py-20 text-center">
-                <h1 className={`${display} text-[clamp(32px,5vw,52px)] font-extrabold leading-[1.05] text-[#14213D]`}>
+            <div className="mx-auto max-w-[620px] px-6 py-16 text-center">
+                <div className="flex justify-center">
+                    <Mascot mood="farewell" size={170} title="Comsky saying goodbye with a smile" />
+                </div>
+                <h1 className={`${display} mt-6 text-[clamp(32px,5vw,52px)] font-extrabold leading-[1.05] text-[#14213D]`}>
                     Your account has been deleted
                 </h1>
                 <p className="mt-5 text-base leading-relaxed text-[#4A5568]">
